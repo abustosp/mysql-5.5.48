@@ -1,0 +1,26 @@
+services:
+  mysql:
+    build: .
+    container_name: mysql-5.5.48
+    image: abustosp/mysql:5.5.48
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      # - ./init:/docker-entrypoint-initdb.d
+    # networks:
+    #   - mysql_network
+
+# volumes:
+#   mysql_data:
+#     driver: local
+
+# networks:
+#   mysql_network:
+#     driver: bridge
