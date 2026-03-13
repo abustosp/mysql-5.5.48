@@ -37,6 +37,10 @@ mysql_escape_string() {
     printf "%s" "$1" | sed "s/'/''/g"
 }
 
+generate_random_password() {
+    head -c 48 /dev/urandom | base64 | tr -d '\n' | cut -c1-32
+}
+
 mysql_socket=(/usr/local/mysql/bin/mysql --protocol=socket --socket=/var/run/mysqld/mysqld.sock -uroot)
 mysqladmin_socket=(/usr/local/mysql/bin/mysqladmin --protocol=socket --socket=/var/run/mysqld/mysqld.sock -uroot)
 
@@ -71,7 +75,7 @@ if [ "${1:-}" = "mysqld" ]; then
         fi
 
         if [ -z "${MYSQL_ROOT_PASSWORD:-}" ] && [ -n "${MYSQL_RANDOM_ROOT_PASSWORD:-}" ]; then
-            MYSQL_ROOT_PASSWORD="$(pwgen -1 32)"
+            MYSQL_ROOT_PASSWORD="$(generate_random_password)"
             export MYSQL_ROOT_PASSWORD
             docker_log "GENERATED ROOT PASSWORD: ${MYSQL_ROOT_PASSWORD}"
         fi
@@ -190,7 +194,7 @@ EOSQL
     fi
 
     docker_log "Starting MySQL server..."
-    exec /usr/local/mysql/bin/mysqld_safe --datadir=/var/lib/mysql --user=mysql
+    exec /usr/local/mysql/bin/mysqld --datadir=/var/lib/mysql --user=mysql --socket=/var/run/mysqld/mysqld.sock
 fi
 
 exec "$@"

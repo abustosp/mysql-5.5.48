@@ -1,35 +1,27 @@
-FROM ubuntu:20.04 AS mysql-downloader
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV MYSQL_TARBALL=mysql-5.5.48-linux2.6-x86_64.tar.gz
 ENV MYSQL_URL=https://downloads.mysql.com/archives/get/p/23/file/${MYSQL_TARBALL}
+ENV PATH=/usr/local/mysql/bin:/usr/local/mysql/scripts:$PATH
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates wget binutils && \
+    apt-get install -y \
+    wget \
+    libaio1 \
+    libncurses5 \
+    libnuma1 \
+    perl \
+    pwgen \
+    ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /tmp/mysql && \
     cd /tmp/mysql && \
     wget -O mysql.tar.gz "${MYSQL_URL}" && \
     tar -xzf mysql.tar.gz && \
-    mv mysql-5.5.48-linux2.6-x86_64 /opt/mysql && \
-    rm -rf /tmp/mysql && \
-    rm -rf /opt/mysql/mysql-test /opt/mysql/sql-bench /opt/mysql/docs /opt/mysql/man /opt/mysql/include && \
-    find /opt/mysql/bin /opt/mysql/lib -type f -exec strip --strip-unneeded {} + 2>/dev/null || true
-
-FROM ubuntu:20.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH=/usr/local/mysql/bin:/usr/local/mysql/scripts:$PATH
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libaio1 \
-    libncurses5 \
-    && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY --from=mysql-downloader /opt/mysql /usr/local/mysql
+    mv mysql-5.5.48-linux2.6-x86_64 /usr/local/mysql && \
+    rm -rf /tmp/mysql
 
 RUN groupadd -r mysql && useradd -r -g mysql mysql && \
     mkdir -p /var/lib/mysql /var/run/mysqld /var/log/mysql /docker-entrypoint-initdb.d && \

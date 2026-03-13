@@ -2,7 +2,7 @@ services:
   mysql:
     build: .
     container_name: mysql-5.5.48
-    image: abustosp/mysql:5.5.48
+    image: abustosp/mysql:5.5.48-optimized-v3
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root

@@ -1,0 +1,18 @@
+services:
+  mysql-v1:
+    build:
+      context: .
+      dockerfile: Dockerfile.v1
+    image: abustosp/mysql:5.5.48-optimized-v1
+
+  mysql-v2:
+    build:
+      context: .
+      dockerfile: Dockerfile.v2
+    image: abustosp/mysql:5.5.48-optimized-v2
+
+  mysql-v3:
+    build:
+      context: .
+      dockerfile: Dockerfile.v3
+    image: abustosp/mysql:5.5.48-optimized-v3

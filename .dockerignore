@@ -1,0 +1,10 @@
+# Exclude runtime data and VCS metadata from build context
+mysql_data/
+.git/
+.gitignore
+
+# Editor and OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
