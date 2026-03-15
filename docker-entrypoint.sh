@@ -38,7 +38,7 @@ mysql_escape_string() {
 }
 
 generate_random_password() {
-    head -c 48 /dev/urandom | base64 | tr -d '\n' | cut -c1-32
+    head -c 48 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | cut -c1-32
 }
 
 mysql_socket=(/usr/local/mysql/bin/mysql --protocol=socket --socket=/var/run/mysqld/mysqld.sock -uroot)
